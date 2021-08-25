@@ -79,7 +79,7 @@ void WorkerProcess::run() {
         ev.data.fd = this->listen_sock;
         epoll_ctl(epoll_fd, EPOLL_CTL_DEL, this->listen_sock, &ev);
 
-        epoll_events_count = epoll_wait(epoll_fd, events, EPOLL_SIZE, EPOLL_RUN_TIMEOUT);
+        epoll_events_count = epoll_wait(epoll_fd, events, EPOLL_SIZE, 0);
         for (int i = 0; i < epoll_events_count; ++i) {
             ClientConnection *client_connection = (ClientConnection *) events[i].data.ptr;
             connection_status_t connection_status = client_connection->connection_processing();
