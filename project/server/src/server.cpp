@@ -205,6 +205,8 @@ int Server::start() {
                 return NOT_OK;
             }
         }
+
+        sleep(1);
     }
 
     return 0;
