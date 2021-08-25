@@ -13,7 +13,7 @@
 #include "client_connection.h"
 
 #define EPOLL_SIZE 2048
-#define EPOLL_RUN_TIMEOUT 1
+#define EPOLL_RUN_TIMEOUT 0.001
 
 bool is_hard_stop = false;
 bool is_soft_stop = false;
