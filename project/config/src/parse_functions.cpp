@@ -142,7 +142,6 @@ int parse_location(ServerSettings &server, std::string &config, int &pos) {
     }
 }
 
-
 int get_lexeme(std::string &config, int &pos, const std::vector<std::string> &valid_properties) {
     while (isspace(config[pos]) && config[pos] != '\n') {
         ++pos;
@@ -163,7 +162,6 @@ int get_lexeme(std::string &config, int &pos, const std::vector<std::string> &va
         return L_BRACE_CLOSE;
     }
 
-
     for (int i = pos; i < config.size() && config[i] != '\n'; ++i) {
         if (config[i] == ':') {
             break;
@@ -180,8 +178,8 @@ int get_lexeme(std::string &config, int &pos, const std::vector<std::string> &va
     }
 
     for (auto prop_iter = valid_properties.begin(); prop_iter != valid_properties.end(); ++prop_iter) {
-        if (*prop_iter == config.substr(pos, (*prop_iter).size())) {
-            pos += (*prop_iter).size() + 1; // +1 to skip a colon or space
+        if (*prop_iter == config.substr(pos, prop_iter->size())) {
+            pos += prop_iter->size() + 1; // +1 to skip a colon or space
             if (*prop_iter == "server") {
                 return L_SERVER_START;
             }
@@ -194,7 +192,6 @@ int get_lexeme(std::string &config, int &pos, const std::vector<std::string> &va
 
     return L_ERR;
 }
-
 
 std::string get_string_from_file(const std::string &filename) {
     std::ifstream file(filename);
@@ -217,7 +214,6 @@ std::string get_string_from_file(const std::string &filename) {
     return str;
 }
 
-
 void parse_config(MainServerSettings &main_server_settings) {
     std::string config_text;
     try {
@@ -228,20 +224,14 @@ void parse_config(MainServerSettings &main_server_settings) {
     int pos = 0;
 
     state_t stages[S_COUNT][L_COUNT] = {
-            /* L_PROTOCOL  L_BRACE_OPEN  L_BRACE_CLOSE    L_NEW_LINE     L_KEY     L_VALUE   L_SERVER_START    L_LOCATION     L_END_LOCATION  L_SERVER_END L_ERR*/
-            /*S_START*/        {S_BRACE_OPEN, S_ERR, S_ERR, S_START,        S_ERR,   S_ERR, S_ERR,          S_ERR,      S_ERR, S_ERR, S_ERR},
-            /*S_BRACE_OPEN*/
-                               {S_ERR,        S_KEY, S_ERR, S_BRACE_OPEN,   S_ERR,   S_ERR, S_ERR,          S_ERR,      S_ERR, S_ERR, S_ERR},
-            /*S_KEY*/
-                               {S_ERR,        S_ERR, S_END, S_KEY,          S_VALUE, S_ERR, S_SERVER_START, S_LOCATION, S_ERR, S_KEY, S_ERR},
-            /*S_VALUE*/
-                               {S_ERR,        S_ERR, S_ERR, S_ERR,          S_ERR,   S_KEY, S_ERR,          S_ERR,      S_ERR, S_ERR, S_ERR},
-            /*S_SERVER_START*/
-                               {S_ERR,        S_KEY, S_ERR, S_SERVER_START, S_ERR,   S_ERR, S_ERR,          S_ERR,      S_ERR, S_ERR, S_ERR},
-            /*S_BRACE_CLOSE*/
-                               {S_ERR,        S_ERR, S_ERR, S_ERR,          S_ERR,   S_ERR, S_ERR,          S_ERR,      S_ERR, S_ERR, S_ERR},
-            /*S_LOCATION*/
-                               {S_ERR,        S_ERR, S_ERR, S_ERR,          S_ERR,   S_ERR, S_ERR,          S_ERR,      S_KEY, S_ERR, S_ERR},
+        /*                  L_PROTOCOL    L_BRACE_OPEN L_BRACE_CLOSE L_NEW_LINE      L_KEY    L_VALUE L_SERVER_START  L_LOCATION  L_END_LOCATION L_SERVER_END L_ERR*/
+        /*S_START*/        {S_BRACE_OPEN, S_ERR,       S_ERR,        S_START,        S_ERR,   S_ERR,  S_ERR,          S_ERR,      S_ERR,         S_ERR,       S_ERR},
+        /*S_BRACE_OPEN*/   {S_ERR,        S_KEY,       S_ERR,        S_BRACE_OPEN,   S_ERR,   S_ERR,  S_ERR,          S_ERR,      S_ERR,         S_ERR,       S_ERR},
+        /*S_KEY*/          {S_ERR,        S_ERR,       S_END,        S_KEY,          S_VALUE, S_ERR,  S_SERVER_START, S_LOCATION, S_ERR,         S_KEY,       S_ERR},
+        /*S_VALUE*/        {S_ERR,        S_ERR,       S_ERR,        S_ERR,          S_ERR,   S_KEY,  S_ERR,          S_ERR,      S_ERR,         S_ERR,       S_ERR},
+        /*S_SERVER_START*/ {S_ERR,        S_KEY,       S_ERR,        S_SERVER_START, S_ERR,   S_ERR,  S_ERR,          S_ERR,      S_ERR,         S_ERR,       S_ERR},
+        /*S_BRACE_CLOSE*/  {S_ERR,        S_ERR,       S_ERR,        S_ERR,          S_ERR,   S_ERR,  S_ERR,          S_ERR,      S_ERR,         S_ERR,       S_ERR},
+        /*S_LOCATION*/     {S_ERR,        S_ERR,       S_ERR,        S_ERR,          S_ERR,   S_ERR,  S_ERR,          S_ERR,      S_KEY,         S_ERR,       S_ERR},
     };
 
     state_t state = S_START;
