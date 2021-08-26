@@ -12,8 +12,7 @@
 const std::vector<std::string> ServerSettings::valid_properties = {"listen", "root", "access_log", "error_log",
                                                                    "location", "servername"};
 
-const std::vector<std::string> ServerSettings::valid_location_properties = {"root", "add_root", "access_log",
-                                                                            "error_log"};
+const std::vector<std::string> ServerSettings::valid_location_properties = {"root", "add_root"};
 
 int ServerSettings::get_number_of_property(std::string property) {
     int begin = 0;
@@ -120,24 +119,6 @@ void ServerSettings::set_location_property(int number_of_property, std::string v
             break;
         case ADD_ROOT_NUMBER:
             location.root = this->root + value.substr(begin, value_length);
-            break;
-        case ACCESS_LOG_LOCATION_NUMBER:
-            if (value.substr(begin, value_length) == "on") {
-                location.is_access_log = true;
-            } else if (value.substr(begin, value_length) == "off") {
-                location.is_access_log = false;
-            } else {
-                throw InvalidConfigException("access_log field in 'location' must be only 'on' or 'off'");
-            }
-            break;
-        case ERROR_LOG_LOCATION_NUMBER:
-            if (value.substr(begin, value_length) == "on") {
-                location.is_error_log = true;
-            } else if (value.substr(begin, value_length) == "off") {
-                location.is_error_log = false;
-            } else {
-                throw InvalidConfigException("error_log field in 'location' must be only 'on' or 'off'");
-            }
             break;
     }
 }

@@ -7,8 +7,6 @@ typedef struct {
     std::string url;
     std::string root;
     bool case_sensitive;
-    bool is_access_log;
-    bool is_error_log;
 } location_t;
 
 class ServerSettings {
@@ -75,8 +73,6 @@ private:
 
     typedef enum {
         ROOT_LOCATION_NUMBER = 0,
-        ADD_ROOT_NUMBER = 1,
-        ACCESS_LOG_LOCATION_NUMBER = 2,
-        ERROR_LOG_LOCATION_NUMBER = 3
+        ADD_ROOT_NUMBER = 1
     } numbers_of_location_properties;
 };
