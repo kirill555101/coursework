@@ -5,7 +5,7 @@
 const std::vector<std::string>
     Date::months = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
 
-const std::vector<std::string> Date::week_days = {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"};
+const std::vector<std::string> Date::week_days = {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
 
 std::string Date::get_date() {
     std::time_t t = std::time(nullptr);
