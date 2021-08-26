@@ -238,7 +238,7 @@ void parse_config(MainServerSettings &main_server_settings) {
     int pos_before;
     int property_number;
 
-    bool is_server_adding = false;
+    bool is_server_adding = false, has_server_been = false;
 
     while (state != S_END && state != S_ERR) {
         pos_before = pos;
@@ -291,13 +291,13 @@ void parse_config(MainServerSettings &main_server_settings) {
                 }
             }
         } else if (lexeme == L_SERVER_START && stages[state][lexeme] == S_SERVER_START) {
-            // if the server block is encountered in the server block
-            if (is_server_adding) {
+            // if the server block is encountered in the server block or sever has been before
+            if (is_server_adding || has_server_been) {
                 state = S_ERR;
                 continue;
             }
-            // main_server_settings.add_server();
             is_server_adding = true;
+            has_server_been = true;
         } else if (lexeme == L_BRACE_CLOSE && is_server_adding) { // if the end of the block is the server
             is_server_adding = false;
             lexeme = L_SERVER_END;
