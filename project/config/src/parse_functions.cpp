@@ -238,8 +238,6 @@ void parse_config(MainServerSettings &main_server_settings) {
     int pos_before;
     int property_number;
 
-    /* the function is responsible for parsing both the main server (http { ... }) and its server blocks,
-     * because their parsing is similar. therefore, we enter the is_server_adding flag. */
     bool is_server_adding = false;
 
     while (state != S_END && state != S_ERR) {
