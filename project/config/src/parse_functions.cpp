@@ -224,13 +224,13 @@ void parse_config(MainServerSettings &main_server_settings) {
     int pos = 0;
 
     state_t stages[S_COUNT][L_COUNT] = {
-        /*                  L_PROTOCOL     L_BRACE_OPEN L_BRACE_CLOSE L_NEW_LINE L_KEY    L_VALUE L_SERVER_START  L_LOCATION  L_END_LOCATION L_SERVER_END L_ERR*/
-        /*S_START*/         {S_BRACE_OPEN, S_ERR,       S_ERR,        S_ERR,     S_ERR,   S_ERR,  S_ERR,          S_ERR,      S_ERR,         S_ERR,       S_ERR},
-        /*S_BRACE_OPEN*/    {S_ERR,        S_KEY,       S_ERR,        S_ERR,     S_ERR,   S_ERR,  S_ERR,          S_ERR,      S_ERR,         S_ERR,       S_ERR},
-        /*S_KEY*/           {S_ERR,        S_ERR,       S_END,        S_KEY,     S_VALUE, S_ERR,  S_SERVER_START, S_LOCATION, S_ERR,         S_KEY,       S_ERR},
-        /*S_VALUE*/         {S_ERR,        S_ERR,       S_ERR,        S_ERR,     S_ERR,   S_KEY,  S_ERR,          S_ERR,      S_ERR,         S_ERR,       S_ERR},
-        /*S_SERVER_START*/  {S_ERR,        S_KEY,       S_ERR,        S_ERR,     S_ERR,   S_ERR,  S_ERR,          S_ERR,      S_ERR,         S_ERR,       S_ERR},
-        /*S_LOCATION*/      {S_ERR,        S_ERR,       S_ERR,        S_ERR,     S_ERR,   S_ERR,  S_ERR,          S_ERR,      S_KEY,         S_ERR,       S_ERR},
+        /*                  L_PROTOCOL     L_BRACE_OPEN L_BRACE_CLOSE L_NEW_LINE L_KEY    L_VALUE L_SERVER_START  L_LOCATION  L_END_LOCATION L_SERVER_END*/
+        /*S_START*/         {S_BRACE_OPEN, S_ERR,       S_ERR,        S_ERR,     S_ERR,   S_ERR,  S_ERR,          S_ERR,      S_ERR,         S_ERR},
+        /*S_BRACE_OPEN*/    {S_ERR,        S_KEY,       S_ERR,        S_ERR,     S_ERR,   S_ERR,  S_ERR,          S_ERR,      S_ERR,         S_ERR},
+        /*S_KEY*/           {S_ERR,        S_ERR,       S_END,        S_KEY,     S_VALUE, S_ERR,  S_SERVER_START, S_LOCATION, S_ERR,         S_KEY},
+        /*S_VALUE*/         {S_ERR,        S_ERR,       S_ERR,        S_ERR,     S_ERR,   S_KEY,  S_ERR,          S_ERR,      S_ERR,         S_ERR},
+        /*S_SERVER_START*/  {S_ERR,        S_KEY,       S_ERR,        S_ERR,     S_ERR,   S_ERR,  S_ERR,          S_ERR,      S_ERR,         S_ERR},
+        /*S_LOCATION*/      {S_ERR,        S_ERR,       S_ERR,        S_ERR,     S_ERR,   S_ERR,  S_ERR,          S_ERR,      S_KEY,         S_ERR},
     };
 
     state_t state = S_START;
@@ -247,6 +247,11 @@ void parse_config(MainServerSettings &main_server_settings) {
         } else {
             lexeme = static_cast<lexeme_t>(get_lexeme(config_text, pos, main_server_settings.valid_properties));
         }
+        if (lexeme == L_ERR) {
+            state = S_ERR;
+            continue;
+        }
+
         if (stages[state][lexeme] == S_ERR) {
             state = S_ERR;
             continue;

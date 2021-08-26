@@ -28,8 +28,8 @@ typedef enum {
     L_LOCATION,
     L_END_LOCATION,
     L_SERVER_END,
-    L_ERR,
     L_COUNT,
+    L_ERR
 } lexeme_t;
 
 typedef enum {
