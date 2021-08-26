@@ -11,7 +11,6 @@ typedef enum {
     S_KEY,
     S_VALUE,
     S_SERVER_START,
-    S_BRACE_CLOSE,
     S_LOCATION,
     S_COUNT,
     S_ERR,
