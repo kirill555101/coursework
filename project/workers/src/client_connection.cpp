@@ -178,11 +178,12 @@ bool ClientConnection::send_file() {
 
 void ClientConnection::message_to_log(log_messages_t log_type) {
     switch (log_type) {
-        case INFO_CONNECTION_FINISHED:
-            if (this->response.get_status() % 100 == 4 || this->response.get_status() % 100 == 5) {
+        case INFO_CONNECTION_FINISHED: {
+            int status = this->response.get_status();
+            if (status % 100 == 4 || status % 100 == 5) {
                 this->write_to_logs("Connection [" + this->request.get_method() + "] [URL "
                                 + this->request.get_url()
-                                + "] [STATUS " + std::to_string(this->response.get_status()) +
+                                + "] [STATUS " + std::to_string(status) +
                                 "] [WRK PID " + std::to_string(getpid()) + "] [CLIENT SOCKET " +
                                 std::to_string(this->sock)
                                 + "] [TIME " +
@@ -190,13 +191,14 @@ void ClientConnection::message_to_log(log_messages_t log_type) {
             } else {
                 this->write_to_logs("Connection [" + this->request.get_method() + "] [URL "
                                 + this->request.get_url()
-                                + "] [STATUS " + std::to_string(this->response.get_status()) +
+                                + "] [STATUS " + std::to_string(status) +
                                 "] [WRK PID " + std::to_string(getpid()) + "] [CLIENT SOCKET " +
                                 std::to_string(this->sock)
                                 + "] [TIME " +
                                 std::to_string((clock() - start_connection) / (double)CLOCKS_PER_SEC * 1000) + " ms]", INFO);
             }
             break;
+        }
         case ERROR_READING_REQUEST:
             this->write_to_logs("Reading request error [WORKER PID " + std::to_string(getpid()) + "] [CLIENT SOCKET "
                                 + std::to_string(this->sock) + "]", ERROR);
