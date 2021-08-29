@@ -6,13 +6,13 @@ HttpBase::HttpBase(const std::unordered_map<std::string, std::string> &headers, 
         : headers(headers), version_major(major), version_minor(minor) {}
 
 int HttpBase::get_minor() const {
-    return version_minor;
+    return this->version_minor;
 }
 
 int HttpBase::get_major() const {
-    return version_major;
+    return this->version_major;
 }
 
 std::unordered_map<std::string, std::string> &HttpBase::get_headers() {
-    return headers;
+    return this->headers;
 }

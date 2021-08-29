@@ -55,7 +55,7 @@ void HttpRequest::add_first_line(const std::string& line) {
         throw ReadException("Error while reading from file descriptor");
     }
 
-    first_line_added = true;
+    this->first_line_added = true;
 }
 
 bool HttpRequest::requst_ended() const {

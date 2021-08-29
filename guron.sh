@@ -19,115 +19,125 @@ get_has_server_started() {
 
 start() {
   if [ ! -d cmake-build-debug ]; then
-    echo "To start server you need to make 'sudo ./$SERVER_NAME.sh build'"
-    exit 1
+    echo "To start the server you need to execute 'sudo ./$SERVER_NAME.sh build'"
+    return
   fi
 
   get_has_server_started
   if [ "$HAS_SERVER_STARTED" \> 1 ]; then
-    echo "Server has already started!"
-    exit 1
-  else
-    if [ -f error.log ]; then
-      rm error.log
-    fi
-    if [ -f access.log ]; then
-      rm access.log
-    fi
-    touch access.log
-    touch error.log
-    echo "Starting $SERVER_NAME Server..."
-    if [ -f "$SERVER_NAME".out ]; then
-      rm "$SERVER_NAME".out
-    fi
-    cp ./cmake-build-debug/"$SERVER_NAME".out "$SERVER_NAME".out
-    ./"$SERVER_NAME".out
-    echo "Server started!"
-    exit 0
+    echo "Server has already been started!"
+    return
   fi
+
+  if [ -f error.log ]; then
+    rm error.log
+  fi
+  if [ -f access.log ]; then
+    rm access.log
+  fi
+
+  touch access.log
+  touch error.log
+
+  if [ -f "$SERVER_NAME".out ]; then
+    rm "$SERVER_NAME".out
+  fi
+
+  cp ./cmake-build-debug/"$SERVER_NAME".out "$SERVER_NAME".out
+  ./"$SERVER_NAME".out
+
+  echo "Server has been started!"
 }
 
 
 stop_soft() {
   get_has_server_started
   if [ ! "$HAS_SERVER_STARTED" \> 1 ]; then
-    echo "Server has not started yet!"
-    exit 1
-  else
-    echo "Stopping soft $SERVER_NAME server..."
-    get_pid
-    kill -1 "$PID_MASTER_PROCESS"
-    echo "Server stopped!"
-    exit 0
-	fi
+    echo "Server has not been started yet!"
+    return
+  fi
+
+  get_pid
+  kill -1 "$PID_MASTER_PROCESS"
+
+  echo "Server has been stopped!"
 }
 
 
 stop_hard() {
   get_has_server_started
   if [ ! "$HAS_SERVER_STARTED" \> 1 ]; then
-    echo "Server has not started yet!"
-    exit 1
-  else
-    echo "Stopping hard $SERVER_NAME server..."
-    get_pid
-    kill -2 "$PID_MASTER_PROCESS"
-    echo "Server stopped!"
-    exit 0
+    echo "Server has not been started yet!"
+    return
   fi
+
+  get_pid
+  kill -2 "$PID_MASTER_PROCESS"
+
+  echo "Server has been stopped!"
 }
 
 
 reload_soft() {
   get_has_server_started
   if [ ! "$HAS_SERVER_STARTED" \> 1 ]; then
-    echo "Server has not started yet!"
-    exit 1
-  else
-    echo "Reloading soft $SERVER_NAME server..."
-    get_pid
-    kill -13 "$PID_MASTER_PROCESS"
-    echo "Server reloaded!"
-    exit 0
+    echo "Server has not been started yet!"
+    return
   fi
+
+  get_pid
+  kill -13 "$PID_MASTER_PROCESS"
+
+  echo "Server has been reloaded!"
 }
 
 
 reload_hard() {
   get_has_server_started
   if [ ! "$HAS_SERVER_STARTED" \> 1 ]; then
-    echo "Server has not started yet!"
-    exit 1
-  else
-    echo "Reloading hard $SERVER_NAME server..."
-    get_pid
-    kill -14 "$PID_MASTER_PROCESS"
-    echo "Server reloaded!"
-    exit 0
+    echo "Server has not been started yet!"
+    return
   fi
+
+  get_pid
+  kill -14 "$PID_MASTER_PROCESS"
+
+  echo "Server has been reloaded!"
 }
 
 
 status() {
   get_has_server_started
   if [ "$HAS_SERVER_STARTED" \> 1 ]; then
-    echo "$SERVER_NAME server is running!"
+    echo "Server is running!"
   else
-    echo "$SERVER_NAME server is down!"
+    echo "Server is down!"
   fi
 }
 
 
 create_config() {
-  cp ."$SERVER_NAME".conf settings/"$SERVER_NAME".conf
+  get_has_server_started
+
+  get_has_server_started
+  if [ "$HAS_SERVER_STARTED" \> 1 ]; then
+    echo "Can't create config file while server is running!"
+    return
+  fi
+
+  if [ -f settings/"$SERVER_NAME".conf ]; then
+    echo "The config file already exists";
+  else
+    cp ."$SERVER_NAME".conf settings/"$SERVER_NAME".conf
+  fi
 }
 
 
 build() {
   get_has_server_started
   if [ "$HAS_SERVER_STARTED" \> 1 ]; then
-    echo "Can't build project while $SERVER_NAME server is running!"
-    exit 1
+    echo "Can't build project while server is running!"
+    return
   fi
 
   if [ -d cmake-build-debug ]; then
@@ -152,27 +162,43 @@ case $1 in
   stop)
     shift
     case $1 in
-      soft)
+      --soft)
         stop_soft
       ;;
-      hard)
+
+      --hard)
         stop_hard
       ;;
+
+      *)
+        echo "Usage: stop <option>";
+        echo
+
+        echo -e "\t--hard\t\tdon't get new connections and don't handle remaining ones";
+        echo -e "\t--stop\t\tdon't get new connections and handle remaining ones\n";
+      ;;
     esac
-    echo "Usage : <hard|soft>";
   ;;
 
   reload)
     shift
     case $1 in
-      soft)
+      --soft)
         reload_soft
       ;;
-      hard)
+
+      --hard)
         reload_hard
       ;;
+
+      *)
+        echo "Usage: reload <option>";
+        echo
+
+        echo -e "\t--hard\t\tdon't get new connections and don't handle remaining ones";
+        echo -e "\t--stop\t\tdon't get new connections and handle remaining ones\n";
+      ;;
     esac
-    echo "Usage : <hard|soft>";
   ;;
 
   status)
@@ -185,20 +211,40 @@ case $1 in
 
   create)
     shift
-    if [ "$1" =  config ]; then
-      create_config
-    else
-      echo "Usage : <config>";
-    fi
+    case $1 in
+      --config)
+        create_config
+      ;;
+
+      *)
+        echo "Usage: reload <option>";
+        echo
+
+        echo -e "\t--config\t\tcreate template config file";
+      ;;
+    esac
   ;;
 
   *)
     get_has_server_started
     if [ "$HAS_SERVER_STARTED" \> 1 ]; then
-      echo "Usage : <stop|reload|status>";
+      echo "Usage: sudo ./guron.sh <command> [<option>]";
+      echo
+
+      echo -e "\tstop\t\tstop the server";
+      echo -e "\treload\t\treload the server";
+      echo -e "\tstatus\t\tget status about server's activity";
     else
-      echo "Usage : <start|build|status|create>";
+      echo "Usage: sudo ./guron.sh <command> [<option>]";
+      echo
+
+      echo -e "\tstart\t\tstart the server";
+      echo -e "\tbuild\t\tbuild the project";
+      echo -e "\tstatus\t\tget status about server's activity";
+      echo -e "\tcreate\t\tcreate file";
     fi
   ;;
 esac
+
+echo
 exit 0

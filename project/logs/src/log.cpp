@@ -10,7 +10,7 @@ Log::Log(std::string file, bool flush_flag, bl::trivial::severity_level lvl) : t
 
     auto sink = boost::make_shared<sink_type>(backend);
     sink->set_formatter(bl::parse_formatter(g_format));
-    sink->set_filter(tag_attr == tag);
+    sink->set_filter(tag_attr == this->tag);
 
     boost::log::add_common_attributes();
 
@@ -19,7 +19,7 @@ Log::Log(std::string file, bool flush_flag, bl::trivial::severity_level lvl) : t
 
 void Log::log(const std::string& s, bl::trivial::severity_level level_message) {
     if (level_message >= this->log_level) {
-        BOOST_LOG_SCOPED_THREAD_TAG("Tag", tag);
+        BOOST_LOG_SCOPED_THREAD_TAG("Tag", this->tag);
         BOOST_LOG_SEV(g_logger, level_message) << s;
     }
 }

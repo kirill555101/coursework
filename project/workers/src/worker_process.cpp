@@ -51,7 +51,7 @@ void WorkerProcess::run() {
                 }
 
                 client = accept(this->listen_sock, NULL, NULL);
-                if (client == NOT_OK) {
+                if (client == -1) {
                     continue;
                 }
                 fcntl(client, F_SETFL, fcntl(client, F_GETFL, 0) | O_NONBLOCK);

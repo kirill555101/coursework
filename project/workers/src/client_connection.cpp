@@ -122,7 +122,7 @@ bool ClientConnection::make_response_header() {
     if (this->stage == ROOT_FOUND) {
         this->response = http_handle(this->request, this->location->root);
         this->file_fd = open((this->location->root + this->request.get_url()).c_str(), O_RDONLY);
-        if (this->file_fd == NOT_OK) {
+        if (this->file_fd == -1) {
             this->stage = ROOT_NOT_FOUND;
             this->file_fd = open(PAGE_404, O_RDONLY);
         }

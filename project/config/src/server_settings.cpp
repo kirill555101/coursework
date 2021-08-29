@@ -19,8 +19,7 @@ int ServerSettings::get_number_of_property(std::string property) {
     while (isspace(property[begin])) {
         ++begin;
     }
-    int property_length;
-    property_length = (property[property.length() - 1] == ':') ?
+    int property_length = (property[property.length() - 1] == ':') ?
                       property.length() - begin - 1 : property.length() - begin;
 
     for (auto prop_iter = this->valid_properties.begin(); prop_iter != this->valid_properties.end(); ++prop_iter) {
@@ -37,8 +36,7 @@ void ServerSettings::set_property(int number_of_property, std::string value) {
     while (isspace(value[begin])) {
         ++begin;
     }
-    int value_length;
-    value_length = (value[value.length() - 1] == ';') ?
+    int value_length = (value[value.length() - 1] == ';') ?
                    value.length() - begin - 1 : value.length() - begin;
     switch (number_of_property) {
         case LISTEN_NUMBER:
@@ -91,8 +89,7 @@ int ServerSettings::get_number_of_location_property(std::string property) {
     while (isspace(property[begin])) {
         ++begin;
     }
-    int property_length;
-    property_length = (property[property.length() - 1] == ':') ?
+    int property_length = (property[property.length() - 1] == ':') ?
                       property.length() - begin - 1 : property.length() - begin;
 
     for (auto prop_iter = this->valid_location_properties.begin();
@@ -129,7 +126,7 @@ location_t *ServerSettings::get_location(std::string &url) {
     std::transform(not_case_sensitive_url.begin(), not_case_sensitive_url.end(),
                    not_case_sensitive_url.begin(), [](unsigned char c) -> unsigned char { return std::tolower(c); });
 
-    for (auto &exact_match_url : exact_match_urls) {
+    for (auto &exact_match_url : this->exact_match_urls) {
         if (!exact_match_url.case_sensitive && not_case_sensitive_url == exact_match_url.url) {
             return &exact_match_url;
         }
@@ -138,7 +135,7 @@ location_t *ServerSettings::get_location(std::string &url) {
         }
     }
 
-    for (auto &preferential_match_url : preferential_prefix_urls) {
+    for (auto &preferential_match_url : this->preferential_prefix_urls) {
         if (!preferential_match_url.case_sensitive && not_case_sensitive_url.find(preferential_match_url.url) == 0) {
             return &preferential_match_url;
         }
@@ -147,7 +144,7 @@ location_t *ServerSettings::get_location(std::string &url) {
         }
     }
 
-    for (auto &regex_match_url : regex_match_urls) {
+    for (auto &regex_match_url : this->regex_match_urls) {
         std::regex regex(regex_match_url.url);
         if (!regex_match_url.case_sensitive && std::regex_match(not_case_sensitive_url.cbegin(), not_case_sensitive_url.cend(), regex)) {
             return &regex_match_url;
@@ -157,7 +154,7 @@ location_t *ServerSettings::get_location(std::string &url) {
         }
     }
 
-    for (auto &prefix_match_url : prefix_match_urls) {
+    for (auto &prefix_match_url : this->prefix_match_urls) {
         if (!prefix_match_url.case_sensitive && not_case_sensitive_url.find(prefix_match_url.url) == 0) {
             return &prefix_match_url;
         }
