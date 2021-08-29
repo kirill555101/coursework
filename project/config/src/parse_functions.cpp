@@ -8,7 +8,7 @@
 #include "server_settings.h"
 #include "exceptions_config_file.h"
 
-location_type_t get_prefix_status(std::string &config, int &pos) {
+location_type_t get_prefix_status(const std::string &config, int &pos) {
     location_type_t type_location;
     if (config[pos] == '=') {
         type_location = EXACT_MATCH;
@@ -26,19 +26,19 @@ location_type_t get_prefix_status(std::string &config, int &pos) {
     return type_location;
 }
 
-static void skip_space(std::string &config, int &pos) {
+static void skip_space(const std::string &config, int &pos) {
     while (config[pos] == ' ') {
         ++pos;
     }
 }
 
-static void skip_isspace(std::string &config, int &pos) {
+static void skip_isspace(const std::string &config, int &pos) {
     while (isspace(config[pos])) {
         ++pos;
     }
 }
 
-bool get_url(std::string &config, int &pos, location_t &location) {
+bool get_url(const std::string &config, int &pos, location_t &location) {
     if (config[pos] != '/') {
         return false;
     }
@@ -142,7 +142,7 @@ int parse_location(ServerSettings &server, std::string &config, int &pos) {
     }
 }
 
-int get_lexeme(std::string &config, int &pos, const std::vector<std::string> &valid_properties) {
+int get_lexeme(const std::string &config, int &pos, const std::vector<std::string> &valid_properties) {
     while (isspace(config[pos]) && config[pos] != '\n') {
         ++pos;
     }
@@ -177,13 +177,13 @@ int get_lexeme(std::string &config, int &pos, const std::vector<std::string> &va
         return L_PROTOCOL;
     }
 
-    for (auto prop_iter = valid_properties.begin(); prop_iter != valid_properties.end(); ++prop_iter) {
-        if (*prop_iter == config.substr(pos, prop_iter->size())) {
-            pos += prop_iter->size() + 1; // +1 to skip a colon or space
-            if (*prop_iter == "server") {
+    for (auto iter = valid_properties.begin(); iter != valid_properties.end(); ++iter) {
+        if (*iter == config.substr(pos, iter->size())) {
+            pos += iter->size() + 1; // +1 to skip a colon or space
+            if (*iter == "server") {
                 return L_SERVER_START;
             }
-            if (*prop_iter == "location") {
+            if (*iter == "location") {
                 return L_LOCATION;
             }
             return L_KEY;

@@ -24,8 +24,8 @@ Server::Server() {
     this->count_workflows = this->settings.get_count_workflows();
     this->server = this->settings.get_server();
 
-    this->error_log = Log(this->server.get_error_log_filename(), true, cast_types_logs_level(error_log_level));
-    this->access_log = Log(this->server.get_access_log_filename(), true, cast_types_logs_level(access_log_level));
+    this->error_log = Log(this->settings.get_error_log_filename(), true, cast_types_logs_level(error_log_level));
+    this->access_log = Log(this->settings.get_access_log_filename(), true, cast_types_logs_level(access_log_level));
 
     this->vector_logs.push_back(&error_log);
     this->vector_logs.push_back(&access_log);
@@ -33,7 +33,7 @@ Server::Server() {
     write_to_logs("SERVER STARTING...", INFO);
 }
 
-bl::trivial::severity_level Server::cast_types_logs_level(std::string lvl) {
+bl::trivial::severity_level Server::cast_types_logs_level(const std::string &lvl) {
     if (lvl == "info") {
         return INFO;
     }
@@ -47,8 +47,8 @@ bl::trivial::severity_level Server::cast_types_logs_level(std::string lvl) {
 }
 
 void Server::write_to_logs(std::string message, bl::trivial::severity_level lvl) {
-    for (auto i : this->vector_logs) {
-        i->log(message, lvl);
+    for (auto &vector_log : this->vector_logs) {
+        vector_log->log(message, lvl);
     }
 }
 

@@ -3,9 +3,6 @@
 #define GET_METHOD "GET"
 #define HEAD_METHOD "HEAD"
 
-#define OK 0
-#define NOT_OK -1
-
 #define NO_ROOT "no root"
 
 #define OK_STATUS 200

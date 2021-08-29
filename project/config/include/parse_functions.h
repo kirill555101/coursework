@@ -43,6 +43,6 @@ std::string get_string_from_file(const std::string &filename);
 
 void parse_config(MainServerSettings &main_server_settings);
 
-int get_lexeme(std::string &config, int &pos, const std::vector<std::string> &valid_properties);
-location_type_t get_prefix_status(std::string& config, int &pos);
-bool get_url(std::string &config, int &pos, location_t &location);
+int get_lexeme(const std::string &config, int &pos, const std::vector<std::string> &valid_properties);
+location_type_t get_prefix_status(const std::string &config, int &pos);
+bool get_url(const std::string &config, int &pos, location_t &location);

@@ -9,12 +9,11 @@
 
 #define STATIC_FOLDER_PATH "static"
 
-const std::vector<std::string> ServerSettings::valid_properties = {"listen", "root", "access_log", "error_log",
-                                                                   "location", "servername"};
+const std::vector<std::string> ServerSettings::valid_properties = {"listen", "root", "servername", "location"};
 
 const std::vector<std::string> ServerSettings::valid_location_properties = {"root", "add_root"};
 
-int ServerSettings::get_number_of_property(std::string property) {
+int ServerSettings::get_number_of_property(const std::string &property) {
     int begin = 0;
     while (isspace(property[begin])) {
         ++begin;
@@ -22,9 +21,9 @@ int ServerSettings::get_number_of_property(std::string property) {
     int property_length = (property[property.length() - 1] == ':') ?
                       property.length() - begin - 1 : property.length() - begin;
 
-    for (auto prop_iter = this->valid_properties.begin(); prop_iter != this->valid_properties.end(); ++prop_iter) {
-        if (property.substr(begin, property_length) == *prop_iter) {
-            return prop_iter - this->valid_properties.begin();
+    for (auto iter = this->valid_properties.begin(); iter != this->valid_properties.end(); ++iter) {
+        if (property.substr(begin, property_length) == *iter) {
+            return iter - this->valid_properties.begin();
         }
     }
 
@@ -46,12 +45,6 @@ void ServerSettings::set_property(int number_of_property, std::string value) {
                 throw InvalidConfigException("listen port can be only integer");
             }
             break;
-        case ACCESS_LOG_NUMBER:
-            this->access_log_file = value.substr(begin, value_length);
-            break;
-        case ERROR_LOG_NUMBER:
-            this->error_log_file = value.substr(begin, value_length);
-            break;
         case ROOT_NUMBER:
             this->root = STATIC_FOLDER_PATH + value.substr(begin, value_length);
             this->is_root = true;
@@ -62,29 +55,7 @@ void ServerSettings::set_property(int number_of_property, std::string value) {
     }
 }
 
-void ServerSettings::print_properties() {
-    std::cout << this->access_log_file << std::endl;
-    std::cout << this->error_log_file << std::endl;
-    std::cout << this->root << std::endl;
-    std::cout << this->port << std::endl;
-    std::cout << this->servername << std::endl;
-    std::cout << "urls" << std::endl;
-    for (auto &i : this->exact_match_urls) {
-        std::cout << "url: " << i.url << "; root: " << i.root << std::endl;
-    }
-    for (auto &i : this->preferential_prefix_urls) {
-        std::cout << "url: " << i.url << "; root: " << i.root << std::endl;
-    }
-    for (auto &i : this->regex_match_urls) {
-        std::cout << "url: " << i.url << "; root: " << i.root << std::endl;
-    }
-    for (auto &i : this->prefix_match_urls) {
-        std::cout << "url: " << i.url << "; root: " << i.root << std::endl;
-    }
-
-}
-
-int ServerSettings::get_number_of_location_property(std::string property) {
+int ServerSettings::get_number_of_location_property(const std::string &property) {
     int begin = 0;
     while (isspace(property[begin])) {
         ++begin;
@@ -92,17 +63,17 @@ int ServerSettings::get_number_of_location_property(std::string property) {
     int property_length = (property[property.length() - 1] == ':') ?
                       property.length() - begin - 1 : property.length() - begin;
 
-    for (auto prop_iter = this->valid_location_properties.begin();
-         prop_iter != this->valid_location_properties.end(); ++prop_iter) {
-        if (property.substr(begin, property_length) == *prop_iter) {
-            return prop_iter - this->valid_location_properties.begin();
+    for (auto iter = this->valid_location_properties.begin();
+        iter != this->valid_location_properties.end(); ++iter) {
+        if (property.substr(begin, property_length) == *iter) {
+            return iter - this->valid_location_properties.begin();
         }
     }
 
     return -1;
 }
 
-void ServerSettings::set_location_property(int number_of_property, std::string value, location_t &location) {
+void ServerSettings::set_location_property(int number_of_property, const std::string &value, location_t &location) {
     int begin = 0;
     while (isspace(value[begin])) {
         ++begin;
@@ -121,8 +92,8 @@ void ServerSettings::set_location_property(int number_of_property, std::string v
 }
 
 
-location_t *ServerSettings::get_location(std::string &url) {
-    auto not_case_sensitive_url = url;
+location_t *ServerSettings::get_location(const std::string &url) {
+    std::string not_case_sensitive_url = url;
     std::transform(not_case_sensitive_url.begin(), not_case_sensitive_url.end(),
                    not_case_sensitive_url.begin(), [](unsigned char c) -> unsigned char { return std::tolower(c); });
 
@@ -188,12 +159,4 @@ int ServerSettings::get_port() {
 
 std::string ServerSettings::get_servername() {
     return this->servername;
-}
-
-std::string ServerSettings::get_access_log_filename() {
-    return this->access_log_file;
-}
-
-std::string ServerSettings::get_error_log_filename() {
-    return this->error_log_file;
 }

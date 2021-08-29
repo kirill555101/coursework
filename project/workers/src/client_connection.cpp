@@ -234,8 +234,8 @@ ClientConnection::connection_stages_t ClientConnection::process_location() {
 }
 
 void ClientConnection::write_to_logs(std::string message, bl::trivial::severity_level lvl) {
-    for (auto &i : this->vector_logs) {
-        i->log(message, lvl);
+    for (auto &vector_log : this->vector_logs) {
+        vector_log->log(message, lvl);
     }
 }
 

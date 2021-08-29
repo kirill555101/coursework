@@ -6,10 +6,5 @@ int main() {
         return -1;
     }
 
-    /*
-    MainServerSettings server("settings/guron.conf");
-    server.get_server().print_properties();
-    */
-
     return 0;
 }

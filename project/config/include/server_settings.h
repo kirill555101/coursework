@@ -19,13 +19,13 @@ public:
 
     static const std::vector<std::string> valid_location_properties;
 
-    int get_number_of_property(std::string property);
+    int get_number_of_property(const std::string &property);
 
     void set_property(int number_of_property, std::string value);
 
-    int get_number_of_location_property(std::string property);
+    int get_number_of_location_property(const std::string &property);
 
-    void set_location_property(int number_of_property, std::string value, location_t &location);
+    void set_location_property(int number_of_property, const std::string &value, location_t &location);
 
     void add_exact_match_url(location_t &location);
 
@@ -35,13 +35,7 @@ public:
 
     void add_prefix_match_urls(location_t &location);
 
-    std::string get_access_log_filename();
-
-    std::string get_error_log_filename();
-
-    location_t *get_location(std::string &url);
-
-    void print_properties();
+    location_t *get_location(const std::string &url);
 
     int get_port();
 
@@ -54,8 +48,6 @@ private:
 
     std::string servername;
 
-    std::string access_log_file, error_log_file;
-
     std::string root;
 
     bool is_root = false;
@@ -64,15 +56,13 @@ private:
 
     // the value of the elements enum is written the index of this key in the array of properties
     typedef enum {
-        LISTEN_NUMBER = 0,
-        ROOT_NUMBER = 1,
-        ACCESS_LOG_NUMBER = 2,
-        ERROR_LOG_NUMBER = 3,
-        SERVERNAME_NUMBER = 5
+        LISTEN_NUMBER,
+        ROOT_NUMBER,
+        SERVERNAME_NUMBER
     } numbers_of_properties;
 
     typedef enum {
-        ROOT_LOCATION_NUMBER = 0,
-        ADD_ROOT_NUMBER = 1
+        ROOT_LOCATION_NUMBER,
+        ADD_ROOT_NUMBER
     } numbers_of_location_properties;
 };

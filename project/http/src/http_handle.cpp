@@ -7,9 +7,9 @@
 #include "http_file_types.h"
 #include "http_handle.h"
 
-static std::string get_content_type(const std::string& url);
+static std::string get_content_type(const std::string &url);
 
-HttpResponse http_handle(const HttpRequest& request, const std::string& root) {
+HttpResponse http_handle(const HttpRequest &request, const std::string &root) {
     if (request.get_major() != 1 || (request.get_minor() != 0 && request.get_minor() != 1)) {
         throw ProtVersionException("Wrong protocol version");
     }
@@ -26,7 +26,7 @@ HttpResponse http_handle(const HttpRequest& request, const std::string& root) {
     } else if (request.get_method() == GET_METHOD || request.get_method() == HEAD_METHOD) {
         file_fd = open((root + request.get_url()).c_str(), O_RDONLY);
         struct stat file_stat;
-        if (file_fd == NOT_OK || fstat(file_fd, &file_stat) == NOT_OK) {
+        if (file_fd == -1 || fstat(file_fd, &file_stat) == -1) {
             status = NOT_FOUND_STATUS;
             message = NOT_FOUND_MSG;
         } else {
@@ -51,7 +51,7 @@ HttpResponse http_handle(const HttpRequest& request, const std::string& root) {
     return HttpResponse(headers, request.get_major(), request.get_minor(), status, message);
 }
 
-static std::string get_content_type(const std::string& url) {
+static std::string get_content_type(const std::string &url) {
     size_t ext_pos = url.rfind('.');
     size_t slash_pos = url.rfind('/');
     if (ext_pos < slash_pos && slash_pos != std::string::npos) {

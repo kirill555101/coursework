@@ -10,17 +10,15 @@ class MainServerSettings {
 public:
     MainServerSettings() = default;
 
-    explicit MainServerSettings(std::string config_filename);
+    explicit MainServerSettings(const std::string &config_filename);
 
     ~MainServerSettings() = default;
 
     static const std::vector<std::string> valid_properties;
 
-    int get_number_of_properties(std::string property);
+    int get_number_of_properties(const std::string &property);
 
-    void set_property(int number_of_property, std::string value);
-
-    void add_server();
+    void set_property(int number_of_property, const std::string &value);
 
     friend void parse_config(MainServerSettings &server);
 
@@ -28,7 +26,9 @@ public:
 
     ServerSettings get_server();
 
-    void print_properties();
+    std::string get_access_log_filename();
+
+    std::string get_error_log_filename();
 
 private:
     std::string config_filename;
@@ -38,8 +38,6 @@ private:
     std::string access_log_file, error_log_file;
 
     ServerSettings server;
-
-    bool is_access_log_file = false, is_error_log_file = false;
 
     typedef enum {
         COUNT_WORKFLOWS_NUMBER = 1,

@@ -25,7 +25,7 @@ BOOST_LOG_ATTRIBUTE_KEYWORD(tag_attr, "Tag", std::string);
 
 class Log {
 public:
-    Log(std::string file, bool flush_flag, bl::trivial::severity_level lvl);
+    Log(const std::string &filename, bool flush_flag, bl::trivial::severity_level lvl);
     Log() = default;
 
     void log(const std::string& s, bl::trivial::severity_level level_message);

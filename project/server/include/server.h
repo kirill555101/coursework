@@ -58,7 +58,7 @@ public:
     ~Server() = default;
 
     int start();
-        bl::trivial::severity_level cast_types_logs_level(std::string lvl);
+        bl::trivial::severity_level cast_types_logs_level(const std::string &lvl);
         void write_to_logs(std::string message, bl::trivial::severity_level lvl);
 
         int daemonize(status_server_action server_action);

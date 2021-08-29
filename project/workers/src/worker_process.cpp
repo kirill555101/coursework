@@ -140,7 +140,7 @@ void WorkerProcess::message_to_log(log_messages_t log_type) {
 }
 
 void WorkerProcess::write_to_logs(std::string message, bl::trivial::severity_level lvl) {
-    for (auto i : this->vector_logs) {
-        i->log(message, lvl);
+    for (auto &vector_log : this->vector_logs) {
+        vector_log->log(message, lvl);
     }
 }
