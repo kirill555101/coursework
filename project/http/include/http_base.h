@@ -8,11 +8,14 @@
 class HttpBase {
 public:
    HttpBase() = default;
+
    HttpBase(const std::unordered_map<std::string, std::string> &headers, int major = -1, int minor = -1);
+
    ~HttpBase() = default;
 
    int get_minor() const;
    int get_major() const;
+
    std::unordered_map<std::string, std::string> &get_headers();
 
 protected:
