@@ -26,9 +26,9 @@ public:
 
     void setup_sighandlers();
 
-    static void sighup_handler(int sig);
-    static void sigint_handler(int sig);
-    static void sigpoll_handler(int sig);
+    static void sighup_handler(int sig); // Handler for soft stop
+
+    static void sigint_handler(int sig); // Handler for hard stop
 
     void write_to_logs(std::string message, bl::trivial::severity_level lvl);
 

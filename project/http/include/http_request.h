@@ -21,7 +21,10 @@ private:
 
 private:
    std::string method;
+
    std::string url;
+
    bool first_line_added = false;
+
    bool request_ended = false;
 };

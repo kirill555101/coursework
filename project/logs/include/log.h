@@ -33,6 +33,8 @@ public:
 
 private:
     std::string tag;
+
     bool key_flush;
+
     bl::trivial::severity_level log_level;
 };

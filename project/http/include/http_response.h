@@ -20,8 +20,8 @@ public:
 
 private:
    int status = 0;
+
    std::string message;
-   bool first_line_added = false;
-   bool headers_read = false;
-   bool response_ended = false;
+
+   bool first_line_added = false, response_ended = false;
 };

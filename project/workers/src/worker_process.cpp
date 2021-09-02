@@ -17,7 +17,6 @@
 
 bool is_hard_stop = false;
 bool is_soft_stop = false;
-bool is_soft_reload = false;
 
 WorkerProcess::WorkerProcess(int listen_sock, class ServerSettings *server_settings,
                              std::vector<Log *> &vector_logs) :
@@ -60,7 +59,7 @@ void WorkerProcess::run() {
                 ev.data.ptr = (ClientConnection *) client_connection;
 
                 epoll_ctl(epoll_fd, EPOLL_CTL_ADD, client, &ev);
-            } else {  // If the event happened on a client socket
+            } else {
                 ClientConnection *client_connection = (ClientConnection *) events[i].data.ptr;
                 connection_status_t connection_status = client_connection->connection_processing();
                 if (connection_status == CONNECTION_FINISHED || connection_status == CONNECTION_TIMEOUT_ERROR ||
@@ -73,7 +72,7 @@ void WorkerProcess::run() {
         }
     }
 
-    if (is_soft_stop || is_soft_reload) {
+    if (is_soft_stop) {
         this->message_to_log(INFO_SOFT_STOP_START);
 
         ev.data.fd = this->listen_sock;
@@ -106,10 +105,6 @@ void WorkerProcess::sigint_handler(int sig) {
     is_hard_stop = true;
 }
 
-void WorkerProcess::sigpoll_handler(int sig) {
-    is_soft_reload = true;
-}
-
 void WorkerProcess::setup_sighandlers() {
     struct sigaction act;
     sigemptyset(&act.sa_mask);
@@ -120,9 +115,6 @@ void WorkerProcess::setup_sighandlers() {
 
     act.sa_handler = sigint_handler;
     sigaction(SIGINT, &act, nullptr);
-
-    act.sa_handler = sigpoll_handler;
-    sigaction(SIGPOLL, &act, nullptr);
 }
 
 void WorkerProcess::message_to_log(log_messages_t log_type) {
