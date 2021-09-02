@@ -76,7 +76,7 @@ private:
 
     connection_stages_t process_location();
 
-    // return true if their connection processing stage is finished correctly
+    // Return true if their connection processing stage is finished correctly
     bool get_request();
 
     bool make_response_header();

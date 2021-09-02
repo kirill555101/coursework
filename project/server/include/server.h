@@ -58,26 +58,29 @@ public:
     ~Server() = default;
 
     int start();
-        bl::trivial::severity_level cast_types_logs_level(const std::string &lvl);
-        void write_to_logs(std::string message, bl::trivial::severity_level lvl);
 
-        int daemonize(status_server_action server_action);
-        bool bind_listen_sock();
-        int add_work_processes();
-        int fill_pid_file();
-        int delete_pid_file();
+    bl::trivial::severity_level cast_types_logs_level(const std::string &lvl);
+    void write_to_logs(std::string message, bl::trivial::severity_level lvl);
 
-    static int process_setup_signals();  // set handlers to signals
-        static void sighup_handler(int sig, siginfo_t* info, void* param);  // handler for soft stop
-        static void sigint_handler(int sig, siginfo_t* info, void* param);  // handler for hard stop
-        static void sigpipe_handler(int sig);  // handler for soft reload
-        static void sigalrm_handler(int sig);  // handler for hard reload
-        static void sigchld_handler(int sig);  // handler for end of soft stop
+    bool daemonize(status_server_action server_action);
+    bool bind_listen_sock();
+    bool add_work_processes();
+    bool fill_pid_file();
+    bool delete_pid_file();
 
-    int server_stop(action_level_t level);
+    static int process_setup_signals();  // Set handlers to signals
 
-    int server_reload(action_level_t level);
-        int apply_config(action_level_t level);
+    static void sighup_handler(int sig, siginfo_t* info, void* param);  // Handler for soft stop
+    static void sigint_handler(int sig, siginfo_t* info, void* param);  // Handler for hard stop
+    static void sigpipe_handler(int sig);  // Handler for soft reload
+    static void sigalrm_handler(int sig);  // Handler for hard reload
+    static void sigchld_handler(int sig);  // Handler for end of soft stop
+
+    bool server_stop(action_level_t level);
+
+    bool server_reload(action_level_t level);
+
+    bool apply_config(action_level_t level);
 
 private:
     int count_workflows = 0;

@@ -16,7 +16,7 @@ MainServerSettings::MainServerSettings(const std::string &config_filename) : con
     parse_config(*this);
 }
 
-int MainServerSettings::get_number_of_properties(const std::string &property) {
+int MainServerSettings::get_number_of_property(const std::string &property) {
     int begin = 0;
     while (isspace(property[begin])) {
         ++begin;

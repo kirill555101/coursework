@@ -54,7 +54,6 @@ private:
 
     std::vector<location_t> exact_match_urls, preferential_prefix_urls, regex_match_urls, prefix_match_urls;
 
-    // the value of the elements enum is written the index of this key in the array of properties
     typedef enum {
         LISTEN_NUMBER,
         ROOT_NUMBER,

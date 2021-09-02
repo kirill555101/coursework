@@ -60,7 +60,7 @@ void WorkerProcess::run() {
                 ev.data.ptr = (ClientConnection *) client_connection;
 
                 epoll_ctl(epoll_fd, EPOLL_CTL_ADD, client, &ev);
-            } else {  // if the event happened on a client socket
+            } else {  // If the event happened on a client socket
                 ClientConnection *client_connection = (ClientConnection *) events[i].data.ptr;
                 connection_status_t connection_status = client_connection->connection_processing();
                 if (connection_status == CONNECTION_FINISHED || connection_status == CONNECTION_TIMEOUT_ERROR ||

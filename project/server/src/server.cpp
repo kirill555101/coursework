@@ -24,8 +24,10 @@ Server::Server() {
     this->count_workflows = this->settings.get_count_workflows();
     this->server = this->settings.get_server();
 
-    this->error_log = Log(this->settings.get_error_log_filename(), true, cast_types_logs_level(error_log_level));
-    this->access_log = Log(this->settings.get_access_log_filename(), true, cast_types_logs_level(access_log_level));
+    this->error_log = Log(this->settings.get_error_log_filename(), true,
+                            this->cast_types_logs_level(error_log_level));
+    this->access_log = Log(this->settings.get_access_log_filename(), true,
+                            this->cast_types_logs_level(access_log_level));
 
     this->vector_logs.push_back(&error_log);
     this->vector_logs.push_back(&access_log);
@@ -52,7 +54,7 @@ void Server::write_to_logs(std::string message, bl::trivial::severity_level lvl)
     }
 }
 
-int Server::daemonize(status_server_action server_action) {
+bool Server::daemonize(status_server_action server_action) {
     if (server_action == START_SERVER) {
         close(STDIN_FILENO);
         close(STDOUT_FILENO);
@@ -61,27 +63,26 @@ int Server::daemonize(status_server_action server_action) {
         pid_t pid = fork();
 
         if (pid == -1) {
-            return -1;
+            return false;
         }
-        if (pid != 0) {  // Возвращается нуль процессу-потомку и пид чилда мастеру
+        if (pid != 0) {  // Return 0 for child and pid for master
             exit(0);
         }
 
+        this->old_master_process = getpid();
         setsid();
-        old_master_process = getpid();
-        return 0;
     }
 
     if (server_action == RELOAD_SERVER) {
         pid_t pid_child_of_old_master = fork();
 
         if (pid_child_of_old_master == -1) {
-            return -1;
+            return false;
         }
 
-        // check it isn't old master
-        if (getpid() == old_master_process) {
-            return 0;
+        // Check it isn't old master
+        if (getpid() == this->old_master_process) {
+            return true;
         }
 
         pid_t pid_to_finish = getpid();
@@ -89,26 +90,25 @@ int Server::daemonize(status_server_action server_action) {
         pid_t new_master_pid = fork();
 
         if (new_master_pid == -1) {
-            return -1;
+            return false;
         }
         if (getpid() == pid_to_finish) {
             exit(0);
         }
 
-        new_master_process = getpid();
+        this->new_master_process = getpid();
         setsid();
-
-        return (int) new_master_process;
     }
-    return 0;
+
+    return true;
 }
 
-int Server::fill_pid_file() {
+bool Server::fill_pid_file() {
     std::ofstream stream_to_pid_file;
     stream_to_pid_file.open("pid_file.txt", std::ios::out);
 
     if (!stream_to_pid_file.is_open()) {
-        return -1;
+        return false;
     }
 
     stream_to_pid_file << getpid() << std::endl;
@@ -119,19 +119,19 @@ int Server::fill_pid_file() {
 
     stream_to_pid_file.close();
 
-    return 0;
+    return true;
 }
 
-int Server::delete_pid_file() {
+bool Server::delete_pid_file() {
     return remove("pid_file.txt");
 }
 
-int Server::add_work_processes() {
+bool Server::add_work_processes() {
     int count_work_processes = this->settings.get_count_workflows();
 
     if (count_work_processes <= 0) {
         write_to_logs("COUNT WORKFLOWS NEED BE MORE 0", ERROR);
-        return -1;
+        return false;
     }
 
     this->workers_pid.clear();
@@ -140,7 +140,7 @@ int Server::add_work_processes() {
         pid_t pid = fork();
         if (pid == -1) {
             write_to_logs("ERROR FORK", ERROR);
-            return -1;
+            return false;
         }
         if (pid != 0) {
             this->workers_pid.push_back(pid);
@@ -151,11 +151,11 @@ int Server::add_work_processes() {
         }
     }
 
-    return 0;
+    return true;
 }
 
 int Server::start() {
-    if (this->daemonize(START_SERVER) != 0) {
+    if (!this->daemonize(START_SERVER)) {
         this->write_to_logs("ERROR IN SERVER DAEMONIZE", ERROR);
         return -1;
     }
@@ -165,12 +165,12 @@ int Server::start() {
         return -1;
     }
 
-    if (this->add_work_processes() != 0) {
+    if (!this->add_work_processes()) {
         this->write_to_logs("ERROR IN ADDING WORK PROCESSES", ERROR);
         return -1;
     }
 
-    if (this->fill_pid_file() == -1) {
+    if (!this->fill_pid_file()) {
         this->write_to_logs("ERROR IN FILL PID FILE", ERROR);
         return -1;
     }
@@ -178,7 +178,7 @@ int Server::start() {
     this->write_to_logs("Worker processes (" +
                         std::to_string(this->workers_pid.size()) + ") successfully started", INFO);
 
-    this->process_setup_signals(); // установка нужных обработчиков сигналов
+    this->process_setup_signals();
 
     while (true) {
         if (process_soft_stop == 1) {
@@ -192,7 +192,7 @@ int Server::start() {
         }
 
         if (process_soft_reload == OLD_MASTER) {
-            if (this->server_reload(SOFT_LEVEL) == -1) {
+            if (!this->server_reload(SOFT_LEVEL)) {
                 this->write_to_logs("ERROR SOFT RELOAD", ERROR);
                 this->server_stop(HARD_LEVEL);
                 return -1;
@@ -200,7 +200,7 @@ int Server::start() {
         }
 
         if (process_hard_reload == OLD_MASTER) {
-            if (this->server_reload(HARD_LEVEL) == -1) {
+            if (!this->server_reload(HARD_LEVEL)) {
                 this->write_to_logs("ERROR HARD RELOAD", ERROR);
                 this->server_stop(HARD_LEVEL);
                 return -1;
@@ -264,7 +264,7 @@ int Server::process_setup_signals() {
     return 0;
 }
 
-int Server::server_stop(action_level_t level) {
+bool Server::server_stop(action_level_t level) {
     if (level == HARD_LEVEL) {
         this->write_to_logs("HARD SERVER STOP...", WARNING);
         if (process_hard_reload == OLD_MASTER) {
@@ -284,7 +284,7 @@ int Server::server_stop(action_level_t level) {
             kill(new_master_pid, SIGCHLD);
         } else {
             this->write_to_logs("SERVER STOPPED!", INFO);
-            delete_pid_file();
+            this->delete_pid_file();
         }
 
         exit(0);
@@ -315,19 +315,17 @@ int Server::server_stop(action_level_t level) {
 
     this->write_to_logs("ERROR! SERVER NOT STOPPED!", ERROR);
 
-    return -1;
+    return false;
 }
 
-int Server::server_reload(action_level_t level) {
+bool Server::server_reload(action_level_t level) {
     this->settings = MainServerSettings(CONFIG_FILE_PATH);
     this->count_workflows = this->settings.get_count_workflows();
     this->server = this->settings.get_server();
 
-    pid_t status_daemonize = this->daemonize(RELOAD_SERVER);
-
-    if (status_daemonize == -1) {
+    if (!this->daemonize(RELOAD_SERVER)) {
         this->write_to_logs("ERROR DAEMONIZE", ERROR);
-        return -1;
+        return false;
     }
 
     if (getpid() != this->old_master_process) {
@@ -344,19 +342,19 @@ int Server::server_reload(action_level_t level) {
         } else if (level == SOFT_LEVEL) {
             process_soft_reload = NEW_MASTER;
         }
-        return 0;
+        return true;
     }
 
-    if (apply_config(level) == -1) {
+    if (!apply_config(level)) {
         this->write_to_logs("ERROR APPLY CONFIG", ERROR);
-        return -1;
+        return false;
     }
 
     int status;
     if (level == HARD_LEVEL) {
-        kill(old_master_process, SIGINT);
+        kill(this->old_master_process, SIGINT);
     } else if (level == SOFT_LEVEL){
-        kill(old_master_process, SIGHUP);
+        kill(this->old_master_process, SIGHUP);
     }
     this->write_to_logs("Send kill to old master process", WARNING);
 
@@ -368,8 +366,8 @@ int Server::server_reload(action_level_t level) {
 
     this->fill_pid_file();
 
-    old_master_process = new_master_process;
-    new_master_process = 0;
+    this->old_master_process = this->new_master_process;
+    this->new_master_process = 0;
 
     this->write_to_logs("SERVER RELOADED!", INFO);
 
@@ -379,37 +377,37 @@ int Server::server_reload(action_level_t level) {
         process_soft_reload = EMPTY_MASTER;
     }
 
-    return 0;
+    return true;
 }
 
-int Server::apply_config(action_level_t level) {
+bool Server::apply_config(action_level_t level) {
     if (level == HARD_LEVEL) {
         this->write_to_logs("HARD SERVER RELOADING...NEW CONFIG APPLYING", WARNING);
     } else if (level == SOFT_LEVEL) {
         this->write_to_logs("SOFT SERVER RELOADING...NEW CONFIG APPLYING", WARNING);
     }
 
-    count_workflows = this->settings.get_count_workflows();
+    this->count_workflows = this->settings.get_count_workflows();
 
     if (count_workflows <= 0) {
         this->write_to_logs("COUNT WORK PROCESSES MUST BE MORE 0", ERROR);
-        return -1;
+        return false;
     }
 
-    if (add_work_processes() == -1) {
+    if (!this->add_work_processes()) {
         this->write_to_logs("ERROR ADD WORKERS", ERROR);
-        return -1;
+        return false;
     }
-    if (fill_pid_file() == -1) {
+    if (!this->fill_pid_file()) {
         this->write_to_logs("ERROR FILL PID FILE", ERROR);
-        return -1;
+        return false;
     }
 
     this->write_to_logs("COUNT WORK PROCESSES WAS SUCCESSFULLY CHECKED", WARNING);
     this->write_to_logs("Worker processes (" +
                         std::to_string(this->workers_pid.size()) + ") successfully started", INFO);
 
-    return 0;
+    return true;
 }
 
 bool Server::bind_listen_sock() {

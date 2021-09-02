@@ -20,7 +20,7 @@ using sink_type = bl::sinks::synchronous_sink<backend_type>;
 using logger_type = bl::sources::severity_logger<bl::trivial::severity_level>;
 static logger_type g_logger;
 
-const std::string g_format = "[%TimeStamp%] [%Severity%] %Message%"; //(%LineID%) [%Uptime%]
+const std::string g_format = "[%TimeStamp%] [%Severity%] %Message%";
 BOOST_LOG_ATTRIBUTE_KEYWORD(tag_attr, "Tag", std::string);
 
 class Log {

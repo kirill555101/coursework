@@ -26,18 +26,6 @@ location_type_t get_prefix_status(const std::string &config, int &pos) {
     return type_location;
 }
 
-static void skip_space(const std::string &config, int &pos) {
-    while (config[pos] == ' ') {
-        ++pos;
-    }
-}
-
-static void skip_isspace(const std::string &config, int &pos) {
-    while (isspace(config[pos])) {
-        ++pos;
-    }
-}
-
 bool get_url(const std::string &config, int &pos, location_t &location) {
     if (config[pos] != '/') {
         return false;
@@ -58,7 +46,7 @@ int parse_location(ServerSettings &server, std::string &config, int &pos) {
     if (server.is_root) {
         location.root = server.root;
     } else {
-        location.root = "\n"; // for the subsequent check that each location block will correspond to some root
+        location.root = "\n"; // For the subsequent check that each location block will correspond to some root
     }
 
     while (isspace(config[pos])) {
@@ -117,7 +105,7 @@ int parse_location(ServerSettings &server, std::string &config, int &pos) {
         }
     }
 
-    if (location.root == "\n") { // if the location block is not set to root
+    if (location.root == "\n") { // If the location block is not set to root
         return L_ERR;
     }
 
@@ -266,7 +254,7 @@ void parse_config(MainServerSettings &main_server_settings) {
                     continue;
                 }
             } else {
-                property_number = main_server_settings.get_number_of_properties(
+                property_number = main_server_settings.get_number_of_property(
                         config_text.substr(pos_before, pos - pos_before));
                 if (property_number == -1) {
                     state = S_ERR;
@@ -291,17 +279,16 @@ void parse_config(MainServerSettings &main_server_settings) {
                 }
             }
         } else if (lexeme == L_SERVER_START && stages[state][lexeme] == S_SERVER_START) {
-            // if the server block is encountered in the server block or sever has been before
             if (is_server_adding || has_server_added) {
                 state = S_ERR;
                 continue;
             }
             is_server_adding = true;
             has_server_added = true;
-        } else if (lexeme == L_BRACE_CLOSE && is_server_adding) { // if the end of the block is the server
+        } else if (lexeme == L_BRACE_CLOSE && is_server_adding) {
             is_server_adding = false;
             lexeme = L_SERVER_END;
-        } else if (lexeme == L_LOCATION) { // if location is encountered outside the server block
+        } else if (lexeme == L_LOCATION) {
             if (!is_server_adding) {
                 state = S_ERR;
                 continue;

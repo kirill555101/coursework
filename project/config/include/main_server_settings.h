@@ -16,7 +16,7 @@ public:
 
     static const std::vector<std::string> valid_properties;
 
-    int get_number_of_properties(const std::string &property);
+    int get_number_of_property(const std::string &property);
 
     void set_property(int number_of_property, const std::string &value);
 
