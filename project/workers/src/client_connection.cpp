@@ -18,7 +18,7 @@
 #include "http_response.h"
 #include "http_handle.h"
 
-#define CLIENT_SEC_TIMEOUT 180 // Maximum request idle time
+#define CLIENT_SEC_TIMEOUT 180
 #define PAGE_404 "public/404.html"
 #define LENGTH_LINE_FOR_RESERVE 256
 #define FILE_BUFFER_LENGTH 4096
@@ -92,7 +92,7 @@ connection_status_t ClientConnection::connection_processing() {
 }
 
 bool ClientConnection::get_request() {
-    bool is_read_data = false;
+    bool has_read_data = false;
     char last_char;
     std::string line;
 
@@ -104,14 +104,14 @@ bool ClientConnection::get_request() {
             line.clear();
             line.reserve(LENGTH_LINE_FOR_RESERVE);
         }
-        is_read_data = true;
+        has_read_data = true;
     }
 
     if (this->request.requst_ended()) {
         return true;
     }
 
-    if (is_read_data) {
+    if (has_read_data) {
         this->timeout = clock();
     }
 
@@ -136,7 +136,7 @@ bool ClientConnection::make_response_header() {
 }
 
 bool ClientConnection::send_header() {
-    bool is_write_data = false;
+    bool has_written_data = false;
     std::string response_str = this->response.get_string();
 
     while (write(this->sock, response_str.c_str() + res_pos, sizeof(char)) == sizeof(char)) {
@@ -144,10 +144,10 @@ bool ClientConnection::send_header() {
         if (res_pos == response_str.size() - 1) {
             return true;
         }
-        is_write_data = true;
+        has_written_data = true;
     }
 
-    if (is_write_data) {
+    if (has_written_data) {
         this->timeout = clock();
     }
 
@@ -155,21 +155,21 @@ bool ClientConnection::send_header() {
 }
 
 bool ClientConnection::send_file() {
-    bool is_write_data = false;
+    bool has_written_data = false;
     char buffer[FILE_BUFFER_LENGTH];
     int read_code = 0, write_result = 0;
 
     read_code = read(this->file_fd, &buffer, FILE_BUFFER_LENGTH);
     while (read_code > 0 && write(this->sock, &buffer, read_code) > 0) {
         read_code = read(this->file_fd, &buffer, FILE_BUFFER_LENGTH);
-        is_write_data = true;
+        has_written_data = true;
     }
 
     if (read_code == 0) {
         return true;
     }
 
-    if (is_write_data) {
+    if (has_written_data) {
         this->timeout = clock();
     }
 
