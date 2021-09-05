@@ -20,9 +20,9 @@ public:
 
     explicit WorkerProcess(int listen_sock, class ServerSettings *server_settings, std::vector<Log*>& vector_logs);
 
-    void run();
-
     ~WorkerProcess() = default;
+
+    void run();
 
     void setup_sighandlers();
 

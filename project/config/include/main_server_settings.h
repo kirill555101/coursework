@@ -35,7 +35,7 @@ private:
 
     int count_workflows = 4;
 
-    std::string access_log_file, error_log_file;
+    std::string access_log_filename, error_log_filename;
 
     ServerSettings server;
 

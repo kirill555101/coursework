@@ -45,10 +45,10 @@ void MainServerSettings::set_property(int number_of_property, const std::string 
             this->count_workflows = stoi(value.substr(begin, value_length));
             break;
         case ACCESS_LOG_NUMBER:
-            this->access_log_file = value.substr(begin, value_length);
+            this->access_log_filename = value.substr(begin, value_length);
             break;
         case ERROR_LOG_NUMBER:
-            this->error_log_file = value.substr(begin, value_length);
+            this->error_log_filename = value.substr(begin, value_length);
             break;
     }
 }
@@ -62,9 +62,9 @@ ServerSettings MainServerSettings::get_server() {
 }
 
 std::string MainServerSettings::get_access_log_filename() {
-    return this->access_log_file;
+    return this->access_log_filename;
 }
 
 std::string MainServerSettings::get_error_log_filename() {
-    return this->error_log_file;
+    return this->error_log_filename;
 }
