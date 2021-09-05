@@ -58,7 +58,7 @@ public:
 
     ~Server() = default;
 
-    int start();
+    bool start();
 
     bl::trivial::severity_level cast_types_logs_level(const std::string &lvl);
 
@@ -74,7 +74,7 @@ public:
 
     bool delete_pid_file();
 
-    static int process_setup_signals();  // Set handlers to signals
+    static int setup_signals();  // Set handlers to signals
 
     static void sighup_handler(int sig, siginfo_t* info, void* param);  // Handler for soft stop
 

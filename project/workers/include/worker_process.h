@@ -24,7 +24,7 @@ public:
 
     void run();
 
-    void setup_sighandlers();
+    void setup_signals();
 
     static void sighup_handler(int sig); // Handler for soft stop
 

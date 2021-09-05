@@ -22,7 +22,7 @@ WorkerProcess::WorkerProcess(int listen_sock, class ServerSettings *server_setti
                              std::vector<Log *> &vector_logs) :
                                 listen_sock(listen_sock), server_settings(server_settings), vector_logs(vector_logs) {
     signal(SIGPIPE, SIG_IGN);
-    this->setup_sighandlers();
+    this->setup_signals();
 }
 
 void WorkerProcess::run() {
@@ -105,7 +105,7 @@ void WorkerProcess::sigint_handler(int sig) {
     is_hard_stop = true;
 }
 
-void WorkerProcess::setup_sighandlers() {
+void WorkerProcess::setup_signals() {
     struct sigaction act;
     sigemptyset(&act.sa_mask);
     act.sa_flags = 0;

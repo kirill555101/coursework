@@ -32,7 +32,7 @@ Server::Server() {
     this->vector_logs.push_back(&error_log);
     this->vector_logs.push_back(&access_log);
 
-    write_to_logs("SERVER STARTING...", INFO);
+    this->write_to_logs("SERVER STARTING...", INFO);
 }
 
 bl::trivial::severity_level Server::cast_types_logs_level(const std::string &lvl) {
@@ -139,7 +139,7 @@ bool Server::add_work_processes() {
     for (int i = 0; i < count_work_processes; ++i) {
         pid_t pid = fork();
         if (pid == -1) {
-            write_to_logs("ERROR FORK", ERROR);
+            this->write_to_logs("ERROR FORK", ERROR);
             return false;
         }
         if (pid != 0) {
@@ -154,48 +154,48 @@ bool Server::add_work_processes() {
     return true;
 }
 
-int Server::start() {
+bool Server::start() {
     if (!this->daemonize(START_SERVER)) {
         this->write_to_logs("ERROR IN SERVER DAEMONIZE", ERROR);
-        return -1;
+        return false;
     }
 
     if (!this->bind_listen_sock()) {
         this->write_to_logs("ERROR IN BIND SOCKET", ERROR);
-        return -1;
+        return false;
     }
 
     if (!this->add_work_processes()) {
         this->write_to_logs("ERROR IN ADDING WORK PROCESSES", ERROR);
-        return -1;
+        return false;
     }
 
     if (!this->fill_pid_file()) {
         this->write_to_logs("ERROR IN FILL PID FILE", ERROR);
-        return -1;
+        return false;
     }
 
     this->write_to_logs("Worker processes (" +
                         std::to_string(this->workers_pid.size()) + ") successfully started", INFO);
 
-    this->process_setup_signals();
+    this->setup_signals();
 
     while (true) {
         if (process_soft_stop == 1) {
             this->server_stop(SOFT_LEVEL);
-            return 0;
+            return true;
         }
 
         if (process_hard_stop == 1) {
             this->server_stop(HARD_LEVEL);
-            return 0;
+            return true;
         }
 
         if (process_soft_reload == OLD_MASTER) {
             if (!this->server_reload(SOFT_LEVEL)) {
                 this->write_to_logs("ERROR SOFT RELOAD", ERROR);
                 this->server_stop(HARD_LEVEL);
-                return -1;
+                return false;
             }
         }
 
@@ -203,14 +203,14 @@ int Server::start() {
             if (!this->server_reload(HARD_LEVEL)) {
                 this->write_to_logs("ERROR HARD RELOAD", ERROR);
                 this->server_stop(HARD_LEVEL);
-                return -1;
+                return false;
             }
         }
 
         sleep(1);
     }
 
-    return 0;
+    return true;
 }
 
 void Server::sighup_handler(int sig, siginfo_t* info, void* param) {
@@ -235,7 +235,7 @@ void Server::sigchld_handler(int sig) {
     has_old_master_stopped = 1;
 }
 
-int Server::process_setup_signals() {
+int Server::setup_signals() {
     struct sigaction act;
     sigemptyset(&act.sa_mask);
     act.sa_flags = 0;
