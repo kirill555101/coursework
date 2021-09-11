@@ -86,7 +86,6 @@ public:
 
     static void sigchld_handler(int sig);  // Handler for end of soft stop
 
-
     bool server_stop(action_level_t level);
 
     bool server_reload(action_level_t level);
