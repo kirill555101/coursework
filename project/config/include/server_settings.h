@@ -3,13 +3,15 @@
 #include <string>
 #include <vector>
 
-typedef struct {
+typedef struct
+{
     std::string url;
     std::string root;
     bool case_sensitive;
 } location_t;
 
-class ServerSettings {
+class ServerSettings
+{
 public:
     ServerSettings() = default;
 
@@ -29,11 +31,11 @@ public:
 
     void add_exact_match_url(location_t &location);
 
-    void add_preferential_prefix_urls(location_t &location);
+    void add_preferential_prefix_url(location_t &location);
 
-    void add_regex_match_urls(location_t &location);
+    void add_regex_match_url(location_t &location);
 
-    void add_prefix_match_urls(location_t &location);
+    void add_prefix_match_url(location_t &location);
 
     location_t *get_location(const std::string &url);
 
@@ -54,13 +56,15 @@ private:
 
     std::vector<location_t> exact_match_urls, preferential_prefix_urls, regex_match_urls, prefix_match_urls;
 
-    typedef enum {
+    typedef enum
+    {
         LISTEN_NUMBER,
         ROOT_NUMBER,
         SERVERNAME_NUMBER
     } numbers_of_properties;
 
-    typedef enum {
+    typedef enum
+    {
         ROOT_LOCATION_NUMBER,
         ADD_ROOT_NUMBER
     } numbers_of_location_properties;
