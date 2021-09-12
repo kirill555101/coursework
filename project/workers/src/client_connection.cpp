@@ -43,7 +43,13 @@ connection_status_t ClientConnection::connection_processing() {
     }
 
     if (stage == ROOT_FOUND || stage == ROOT_NOT_FOUND) {
-        this->make_response_header();
+        try {
+            this->make_response_header();
+        } catch (std::exception &e) {
+            this->stage = BAD_REQUEST;
+            this->message_to_log(ERROR_BAD_REQUEST);
+            return ERROR_IN_REQUEST;
+        }
         this->stage = SEND_HTTP_HEADER_RESPONSE;
     }
 
@@ -162,7 +168,7 @@ void ClientConnection::message_to_log(log_messages_t log_type) {
     switch (log_type) {
         case INFO_CONNECTION_FINISHED: {
             int status = this->response.get_status();
-            if (status % 100 == 4 || status % 100 == 5) {
+            if (status % 100 == 4) {
                 this->write_to_logs("Connection [" + this->request.get_method() + "] [URL "
                                 + this->request.get_url()
                                 + "] [STATUS " + std::to_string(status) +
