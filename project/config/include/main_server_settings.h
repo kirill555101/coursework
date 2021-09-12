@@ -8,7 +8,6 @@
 #include <fstream>
 
 #include "server_settings.h"
-#include "exceptions_config_file.h"
 
 class MainServerSettings {
 public:

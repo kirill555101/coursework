@@ -7,7 +7,7 @@
 #include <iostream>
 
 #include "main_server_settings.h"
-#include "exceptions_config_file.h"
+#include "config_file_exceptions.h"
 
 typedef enum {
     S_START,

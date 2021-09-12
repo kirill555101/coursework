@@ -5,8 +5,8 @@
 #include <algorithm>
 #include <regex>
 
-#include "exceptions_config_file.h"
 #include "server_settings_exceptions.h"
+#include "config_file_exceptions.h"
 
 typedef struct
 {
