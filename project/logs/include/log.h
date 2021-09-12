@@ -14,6 +14,8 @@
 #include <boost/log/core.hpp>
 #include <boost/log/sources/global_logger_storage.hpp>
 
+#include "log_defines.h"
+
 namespace bl = boost::log;
 namespace kw = bl::keywords;
 

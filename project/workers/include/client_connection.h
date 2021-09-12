@@ -13,7 +13,6 @@
 #include "http_handle.h"
 #include "server_settings.h"
 #include "log.h"
-#include "log_defines.h"
 
 typedef enum {
     CONNECTION_PROCESSING,
