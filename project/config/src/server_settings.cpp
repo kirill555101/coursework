@@ -37,6 +37,7 @@ void ServerSettings::set_property(int number_of_property, std::string value)
     switch (number_of_property)
     {
     case LISTEN_NUMBER:
+    {
         try
         {
             this->port = stoi(value.substr(begin, value_length));
@@ -45,7 +46,12 @@ void ServerSettings::set_property(int number_of_property, std::string value)
         {
             throw InvalidConfigException("listen port can be only integer");
         }
+        if (this->port <= 0)
+        {
+            throw InvalidConfigException("listen port can be only greater than zero");
+        }
         break;
+    }
     case ROOT_NUMBER:
         this->root = STATIC_FOLDER_PATH + value.substr(begin, value_length);
         this->is_root = true;

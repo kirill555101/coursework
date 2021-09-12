@@ -254,14 +254,8 @@ std::string get_string_from_file(const std::string &filename)
 void parse_config(MainServerSettings &main_server_settings)
 {
     std::string config_text;
-    try
-    {
-        config_text = get_string_from_file(main_server_settings.config_filename);
-    }
-    catch (std::exception &e)
-    {
-        std::cout << e.what();
-    }
+
+    config_text = get_string_from_file(main_server_settings.config_filename);
     int pos = 0;
 
     state_t stages[S_COUNT][L_COUNT] = {
@@ -338,8 +332,8 @@ void parse_config(MainServerSettings &main_server_settings)
                 }
                 catch (std::exception &e)
                 {
-                    std::cout << e.what();
-                    break;
+                    state = S_ERR;
+                    continue;
                 }
             }
             else
@@ -350,8 +344,8 @@ void parse_config(MainServerSettings &main_server_settings)
                 }
                 catch (std::exception &e)
                 {
-                    std::cout << e.what();
-                    break;
+                    state = S_ERR;
+                    continue;
                 }
             }
         }

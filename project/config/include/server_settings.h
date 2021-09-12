@@ -51,11 +51,11 @@ public:
     friend int parse_location(ServerSettings &server, std::string &config, int &pos);
 
 private:
-    int port;
+    int port = 80;
 
-    std::string servername;
+    std::string servername = "127.0.0.1";
 
-    std::string root;
+    std::string root = "/";
 
     bool is_root = false;
 

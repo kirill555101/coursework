@@ -40,8 +40,21 @@ void MainServerSettings::set_property(int number_of_property, const std::string 
     switch (number_of_property)
     {
     case COUNT_WORKFLOWS_NUMBER:
-        this->count_workflows = stoi(value.substr(begin, value_length));
+    {
+        try
+        {
+            this->count_workflows = stoi(value.substr(begin, value_length));
+        }
+        catch (std::exception &e)
+        {
+            throw InvalidConfigException("count_workflows can be only integer");
+        }
+        if (this->count_workflows <= 0)
+        {
+            throw InvalidConfigException("count_workflows can be only greater than zero");
+        }
         break;
+    }
     case ACCESS_LOG_NUMBER:
         this->access_log_filename = value.substr(begin, value_length);
         break;
