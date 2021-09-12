@@ -9,8 +9,10 @@
 
 static std::string get_content_type(const std::string &url);
 
-HttpResponse http_handle(const HttpRequest &request, const std::string &root) {
-    if (request.get_major() != 1 || (request.get_minor() != 0 && request.get_minor() != 1)) {
+HttpResponse http_handle(const HttpRequest &request, const std::string &root)
+{
+    if (request.get_major() != 1 || (request.get_minor() != 0 && request.get_minor() != 1))
+    {
         throw ProtVersionException("Wrong protocol version");
     }
 
@@ -20,29 +22,40 @@ HttpResponse http_handle(const HttpRequest &request, const std::string &root) {
     headers[SERVER_HDR] = SERVER_VL;
     int file_fd;
 
-    if (root == NO_ROOT) {
+    if (root == NO_ROOT)
+    {
         status = NOT_FOUND_STATUS;
         message = NOT_FOUND_MSG;
-    } else if (request.get_method() == GET_METHOD || request.get_method() == HEAD_METHOD) {
+    }
+    else if (request.get_method() == GET_METHOD || request.get_method() == HEAD_METHOD)
+    {
         file_fd = open((root + request.get_url()).c_str(), O_RDONLY);
         struct stat file_stat;
-        if (file_fd == -1 || fstat(file_fd, &file_stat) == -1) {
+        if (file_fd == -1 || fstat(file_fd, &file_stat) == -1)
+        {
             status = NOT_FOUND_STATUS;
             message = NOT_FOUND_MSG;
-        } else {
+        }
+        else
+        {
             close(file_fd);
-            try {
+            try
+            {
                 std::string content_type = get_content_type(request.get_url());
                 headers[CONTENT_TYPE_HDR] = content_type;
                 headers[CONTENT_LENGTH_HDR] = std::to_string(file_stat.st_size);
                 status = OK_STATUS;
                 message = OK_MSG;
-            } catch (std::exception &e) {
+            }
+            catch (std::exception &e)
+            {
                 status = UNSUPPORTED_STATUS;
                 message = UNSUPPORTED_MSG;
             }
         }
-    } else {
+    }
+    else
+    {
         throw MethodException("Wrong method");
     }
 
@@ -51,23 +64,29 @@ HttpResponse http_handle(const HttpRequest &request, const std::string &root) {
     return HttpResponse(headers, request.get_major(), request.get_minor(), status, message);
 }
 
-static std::string get_content_type(const std::string &url) {
+static std::string get_content_type(const std::string &url)
+{
     size_t ext_pos = url.rfind('.');
     size_t slash_pos = url.rfind('/');
-    if (ext_pos < slash_pos && slash_pos != std::string::npos) {
+    if (ext_pos < slash_pos && slash_pos != std::string::npos)
+    {
         ext_pos = std::string::npos;
     }
 
     std::string content_type;
-    if (ext_pos != std::string::npos) {
+    if (ext_pos != std::string::npos)
+    {
         ++ext_pos;
         std::string ext = url.substr(ext_pos, url.size() - ext_pos);
         auto iter = types.find(ext);
-        if (iter == types.end()) {
-            throw WrongFileType("Unsupported file type");
+        if (iter == types.end())
+        {
+            throw WrongFileTypeException("Unsupported file type");
         }
         content_type = iter->second;
-    } else {
+    }
+    else
+    {
         content_type = types.find("txt")->second;
     }
     return content_type;

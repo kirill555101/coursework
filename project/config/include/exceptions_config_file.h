@@ -11,7 +11,7 @@ public:
         return msg.c_str();
     }
 
-protected:
+private:
     std::string msg;
 };
 
