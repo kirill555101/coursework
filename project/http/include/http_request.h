@@ -1,5 +1,8 @@
 #pragma once
 
+#include <cstring>
+#include <sstream>
+
 #include "http_base.h"
 
 class HttpRequest : public HttpBase {

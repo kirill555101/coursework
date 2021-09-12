@@ -1,16 +1,4 @@
-#include <sys/socket.h>
-#include <sys/epoll.h>
-#include <fcntl.h>
-#include <csignal>
-#include <boost/log/core.hpp>
-#include <boost/log/trivial.hpp>
-#include <boost/log/expressions.hpp>
-#include <boost/log/utility/setup/file.hpp>
-#include <boost/log/sources/global_logger_storage.hpp>
-
 #include "worker_process.h"
-#include "server_settings.h"
-#include "client_connection.h"
 
 #define EPOLL_SIZE 2048
 #define EPOLL_RUN_TIMEOUT 1

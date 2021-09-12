@@ -1,7 +1,3 @@
-#include <cstring>
-#include <sstream>
-
-#include "http_exceptions.h"
 #include "http_request.h"
 
 std::string HttpRequest::get_method() const {

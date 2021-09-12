@@ -1,23 +1,17 @@
 #pragma once
 
-#include "main_server_settings.h"
-#include "server_settings.h"
-#include "worker_process.h"
-#include "log.h"
-#include "log_defines.h"
-
-#include <vector>
-#include <string>
 #include <fstream>
-#include <boost/log/core.hpp>
-#include <boost/log/trivial.hpp>
-#include <boost/log/expressions.hpp>
-#include <boost/log/utility/setup/file.hpp>
-#include <boost/log/utility/setup/common_attributes.hpp>
-#include <boost/log/sources/global_logger_storage.hpp>
-#include <boost/log/attributes.hpp>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <sys/socket.h>
+#include <arpa/inet.h>
+#include <cstdlib>
+#include <unistd.h>
+#include <iostream>
+#include <csignal>
+
+#include "main_server_settings.h"
+#include "worker_process.h"
 
 typedef boost::log::sources::severity_logger<boost::log::trivial::severity_level> logger_t;
 

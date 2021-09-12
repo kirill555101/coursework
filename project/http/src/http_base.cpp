@@ -1,5 +1,3 @@
-#include <unistd.h>
-
 #include "http_base.h"
 
 HttpBase::HttpBase(const std::unordered_map<std::string, std::string> &headers, int major, int minor)

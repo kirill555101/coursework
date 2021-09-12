@@ -1,4 +1,3 @@
-#include "http_exceptions.h"
 #include "http_response.h"
 
 HttpResponse::HttpResponse(std::unordered_map<std::string, std::string> headers,

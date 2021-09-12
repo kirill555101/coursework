@@ -2,7 +2,9 @@
 
 #include <string>
 #include <unordered_map>
+#include <unistd.h>
 
+#include "http_exceptions.h"
 #include "http_defines.h"
 
 class HttpBase {

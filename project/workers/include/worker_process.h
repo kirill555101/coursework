@@ -1,14 +1,11 @@
 #pragma once
 
 #include <unistd.h>
-#include <vector>
-#include <string>
 #include <map>
+#include <sys/epoll.h>
+#include <csignal>
 
-#include "server_settings.h"
 #include "client_connection.h"
-#include "log.h"
-#include "log_defines.h"
 
 extern bool is_hard_stop;
 extern bool is_soft_stop;

@@ -2,8 +2,12 @@
 
 #include <string>
 #include <vector>
+#include <string>
+#include <fstream>
+#include <iostream>
 
 #include "main_server_settings.h"
+#include "exceptions_config_file.h"
 
 typedef enum {
     S_START,

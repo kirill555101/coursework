@@ -1,10 +1,3 @@
-#include <cstdlib>
-#include <unistd.h>
-#include <iostream>
-#include <csignal>
-#include <sys/socket.h>
-#include <arpa/inet.h>
-
 #include "server.h"
 
 #define BACKLOG 256

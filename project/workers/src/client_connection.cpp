@@ -1,22 +1,4 @@
-#include <sys/socket.h>
-#include <arpa/inet.h>
-#include <netinet/in.h>
-#include <boost/log/core.hpp>
-#include <boost/log/expressions.hpp>
-#include <boost/log/sources/global_logger_storage.hpp>
-#include <boost/log/trivial.hpp>
-#include <boost/log/utility/setup/file.hpp>
-#include <ctime>
-#include <exception>
-#include <fcntl.h>
-#include <netdb.h>
-#include <unistd.h>
-#include <errno.h>
-
 #include "client_connection.h"
-#include "http_request.h"
-#include "http_response.h"
-#include "http_handle.h"
 
 #define CLIENT_SEC_TIMEOUT 180
 #define PAGE_404 "public/404.html"

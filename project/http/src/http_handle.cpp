@@ -1,10 +1,3 @@
-#include <fcntl.h>
-#include <sys/stat.h>
-#include <unistd.h>
-
-#include "http_date.h"
-#include "http_exceptions.h"
-#include "http_file_types.h"
 #include "http_handle.h"
 
 static std::string get_content_type(const std::string &url);

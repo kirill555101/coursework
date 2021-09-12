@@ -1,5 +1,3 @@
-#include <ctime>
-
 #include "http_date.h"
 
 const std::vector<std::string>

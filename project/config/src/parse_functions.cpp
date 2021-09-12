@@ -1,12 +1,4 @@
-#include <vector>
-#include <string>
-#include <fstream>
-#include <iostream>
-
 #include "parse_functions.h"
-#include "main_server_settings.h"
-#include "server_settings.h"
-#include "exceptions_config_file.h"
 
 location_type_t get_prefix_status(const std::string &config, int &pos)
 {

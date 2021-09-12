@@ -11,6 +11,8 @@
 #include <boost/log/utility/setup/console.hpp>
 #include <boost/log/expressions.hpp>
 #include <boost/log/attributes/scoped_attribute.hpp>
+#include <boost/log/core.hpp>
+#include <boost/log/sources/global_logger_storage.hpp>
 
 namespace bl = boost::log;
 namespace kw = bl::keywords;
