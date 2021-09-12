@@ -3,9 +3,9 @@
 #include <exception>
 #include <string>
 
-class BaseConfigFileException : public std::exception {
+class ConfigFileBaseException : public std::exception {
 public:
-    BaseConfigFileException(const std::string &msg) : msg(std::move(msg)) {}
+    ConfigFileBaseException(const std::string &msg) : msg(std::move(msg)) {}
 
     const char *what() const noexcept override {
         return msg.c_str();
@@ -15,12 +15,12 @@ private:
     std::string msg;
 };
 
-class NoSuchConfigFileException : public BaseConfigFileException {
+class NoSuchConfigFileException : public ConfigFileBaseException {
 public:
-    NoSuchConfigFileException(const std::string &msg) : BaseConfigFileException(msg) {}
+    NoSuchConfigFileException(const std::string &msg) : ConfigFileBaseException(msg) {}
 };
 
-class InvalidConfigException : public BaseConfigFileException {
+class InvalidConfigException : public ConfigFileBaseException {
 public:
-    InvalidConfigException(const std::string &msg) : BaseConfigFileException(msg) {}
+    InvalidConfigException(const std::string &msg) : ConfigFileBaseException(msg) {}
 };
