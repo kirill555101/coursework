@@ -5,7 +5,8 @@
 
 #include "http_base.h"
 
-class HttpRequest : public HttpBase {
+class HttpRequest : public HttpBase
+{
 public:
    HttpRequest() = default;
 

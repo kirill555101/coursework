@@ -7,7 +7,8 @@
 #include "http_exceptions.h"
 #include "http_defines.h"
 
-class HttpBase {
+class HttpBase
+{
 public:
    HttpBase() = default;
 

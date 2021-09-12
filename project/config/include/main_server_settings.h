@@ -9,7 +9,8 @@
 
 #include "server_settings.h"
 
-class MainServerSettings {
+class MainServerSettings
+{
 public:
     MainServerSettings() = default;
 
@@ -42,7 +43,8 @@ private:
 
     ServerSettings server;
 
-    typedef enum {
+    typedef enum
+    {
         COUNT_WORKFLOWS_NUMBER = 1,
         ACCESS_LOG_NUMBER = 2,
         ERROR_LOG_NUMBER = 3

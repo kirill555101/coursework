@@ -4,11 +4,12 @@
 #include <vector>
 #include <ctime>
 
-class Date {
+class Date
+{
 public:
    Date() = delete;
 
-   Date(const Date&) = delete;
+   Date(const Date &) = delete;
 
    ~Date() = delete;
 

@@ -9,7 +9,8 @@
 #include "main_server_settings.h"
 #include "config_file_exceptions.h"
 
-typedef enum {
+typedef enum
+{
     S_START,
     S_BRACE_OPEN,
     S_KEY,
@@ -21,7 +22,8 @@ typedef enum {
     S_END
 } state_t;
 
-typedef enum {
+typedef enum
+{
     L_PROTOCOL,
     L_BRACE_OPEN,
     L_BRACE_CLOSE,
@@ -36,7 +38,8 @@ typedef enum {
     L_ERR
 } lexeme_t;
 
-typedef enum {
+typedef enum
+{
     EXACT_MATCH,
     PREFERENTIAL_PREFIX,
     REGEX_MATCH,

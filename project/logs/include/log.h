@@ -27,13 +27,14 @@ static logger_type g_logger;
 const std::string g_format = "[%TimeStamp%] [%Severity%] %Message%";
 BOOST_LOG_ATTRIBUTE_KEYWORD(tag_attr, "Tag", std::string);
 
-class Log {
+class Log
+{
 public:
     Log(const std::string &filename, bool flush_flag, bl::trivial::severity_level lvl);
 
     Log() = default;
 
-    void log(const std::string& s, bl::trivial::severity_level level_message);
+    void log(const std::string &s, bl::trivial::severity_level level_message);
 
 private:
     std::string tag;

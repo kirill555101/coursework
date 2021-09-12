@@ -29,24 +29,28 @@ extern int has_old_master_stopped;
 extern pid_t new_master_pid;
 extern std::string path_to_config;
 
-typedef enum {
+typedef enum
+{
     SOFT_LEVEL,
     HARD_LEVEL,
     NULL_LEVEL
 } action_level_t;
 
-typedef enum {
+typedef enum
+{
     START_SERVER,
     RELOAD_SERVER,
 } status_server_action;
 
-typedef enum {
+typedef enum
+{
     EMPTY_MASTER,
     OLD_MASTER,
     NEW_MASTER
 } master_status_t;
 
-class Server {
+class Server
+{
 public:
     Server();
 
@@ -68,17 +72,17 @@ public:
 
     bool delete_pid_file();
 
-    static int setup_signals();  // Set handlers to signals
+    static int setup_signals(); // Set handlers to signals
 
-    static void sighup_handler(int sig, siginfo_t* info, void* param);  // Handler for soft stop
+    static void sighup_handler(int sig, siginfo_t *info, void *param); // Handler for soft stop
 
-    static void sigint_handler(int sig, siginfo_t* info, void* param);  // Handler for hard stop
+    static void sigint_handler(int sig, siginfo_t *info, void *param); // Handler for hard stop
 
-    static void sigpipe_handler(int sig);  // Handler for soft reload
+    static void sigpipe_handler(int sig); // Handler for soft reload
 
-    static void sigalrm_handler(int sig);  // Handler for hard reload
+    static void sigalrm_handler(int sig); // Handler for hard reload
 
-    static void sigchld_handler(int sig);  // Handler for end of soft stop
+    static void sigchld_handler(int sig); // Handler for end of soft stop
 
     bool server_stop(action_level_t level);
 
@@ -97,7 +101,7 @@ private:
 
     Log access_log, error_log;
 
-    std::vector<Log*> vector_logs;
+    std::vector<Log *> vector_logs;
 
     class ServerSettings server;
 

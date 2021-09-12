@@ -14,7 +14,8 @@
 #include "server_settings.h"
 #include "log.h"
 
-typedef enum {
+typedef enum
+{
     CONNECTION_PROCESSING,
     CONNECTION_TIMEOUT_ERROR,
     CONNECTION_FINISHED,
@@ -24,11 +25,12 @@ typedef enum {
     CHECKOUT_CLIENT_FOR_WRITE
 } connection_status_t;
 
-class ClientConnection {
+class ClientConnection
+{
 public:
     ClientConnection() = default;
 
-    ClientConnection(class ServerSettings *server_settings, std::vector<Log*>& vector_logs);
+    ClientConnection(class ServerSettings *server_settings, std::vector<Log *> &vector_logs);
 
     ~ClientConnection();
 
@@ -45,9 +47,10 @@ private:
 
     clock_t timeout, start_connection;
 
-    std::vector<Log*> vector_logs;
+    std::vector<Log *> vector_logs;
 
-    typedef enum {
+    typedef enum
+    {
         GET_REQUEST,
         ROOT_FOUND,
         ROOT_NOT_FOUND,
@@ -57,7 +60,8 @@ private:
         ERROR_STAGE
     } connection_stages_t;
 
-    typedef enum {
+    typedef enum
+    {
         INFO_CONNECTION_FINISHED,
         ERROR_READING_REQUEST,
         ERROR_SEND_HEADER,

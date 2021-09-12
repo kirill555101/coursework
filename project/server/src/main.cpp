@@ -1,8 +1,10 @@
 #include "server.h"
 
-int main() {
+int main()
+{
     Server server;
-    if (!server.start()) {
+    if (!server.start())
+    {
         return -1;
     }
 

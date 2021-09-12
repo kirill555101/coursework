@@ -11,11 +11,12 @@ extern bool is_hard_stop;
 extern bool is_soft_stop;
 extern bool is_soft_reload;
 
-class WorkerProcess {
+class WorkerProcess
+{
 public:
     WorkerProcess() = default;
 
-    explicit WorkerProcess(int listen_sock, class ServerSettings *server_settings, std::vector<Log*>& vector_logs);
+    explicit WorkerProcess(int listen_sock, class ServerSettings *server_settings, std::vector<Log *> &vector_logs);
 
     ~WorkerProcess() = default;
 
@@ -30,7 +31,8 @@ public:
     void write_to_logs(std::string message, bl::trivial::severity_level lvl);
 
 private:
-    typedef enum {
+    typedef enum
+    {
         INFO_HARD_STOP_DONE,
         INFO_SOFT_STOP_START,
         INFO_SOFT_STOP_DONE
@@ -44,5 +46,5 @@ private:
 
     void message_to_log(log_messages_t log_type);
 
-    std::vector<Log*> vector_logs;
+    std::vector<Log *> vector_logs;
 };
