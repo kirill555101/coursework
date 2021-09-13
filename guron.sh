@@ -4,7 +4,7 @@
 ### END INIT INFO
 
 
-export SERVER_NAME=guron
+SERVER_NAME=guron
 
 
 get_pid() {
